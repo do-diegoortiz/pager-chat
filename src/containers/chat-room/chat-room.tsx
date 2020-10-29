@@ -39,6 +39,7 @@ const ChatRoom: React.FC<Props> = ({ location }) => {
   const [typing, setTyping] = useState<string>("");
 
   const BASE_ENDPOINT = "https://pager-hiring.herokuapp.com/?username=";
+  const AVATAR_ENDPOINT = "https://ui-avatars.com/api/?background=EEE&size=32&name="
 
   useEffect(() => {
     const { username } = queryString.parse(location.search);
@@ -108,7 +109,10 @@ const ChatRoom: React.FC<Props> = ({ location }) => {
       <h1>Chat</h1>
       <div>
         {messages.map((message) => (
-          <p key={message.username + message.time}>{message.username}: {message.text}</p>
+          <p key={message.username + message.time}>
+            <img src={AVATAR_ENDPOINT + message.username} alt="avatar"/>
+            : {message.text}
+          </p>
         ))}
 
         <input
