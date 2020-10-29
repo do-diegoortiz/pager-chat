@@ -1,24 +1,15 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+// import "./App.css";
+import Login from "./containers/login/login";
+import ChatRoom from "./containers/chat-room/chat-room";
+
+const App = () => (
+  <Router>
+    <Route path="/" exact component={Login} />
+    <Route path="/chat" component={ChatRoom} />
+  </Router>
+);
 
 export default App;
