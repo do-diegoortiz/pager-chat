@@ -16,7 +16,8 @@ interface IMessage {
   type: "text" | "image";
   username: string;
   time: Date;
-  text: string;
+  text?: string;
+  url?: string;
   alt?: string | null;
 }
 
@@ -26,20 +27,25 @@ interface ITypers {
 
 const DEFAULT_MESSAGE: IMessage = {
   type: "text",
-  username: '',
+  username: "",
   time: new Date(),
-  text: ''
-}
+  text: "",
+};
 
 const ChatRoom: React.FC<Props> = ({ location }) => {
   const [userName, setUserName] = useState<string>("");
   const [message, setMessage] = useState<IMessage>(DEFAULT_MESSAGE);
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [currentTimeout, setCurrentTimeout] = useState<ReturnType<typeof setTimeout>>();
+  const [currentTimeout, setCurrentTimeout] = useState<
+    ReturnType<typeof setTimeout>
+  >();
   const [typing, setTyping] = useState<string>("");
 
   const BASE_ENDPOINT = "https://pager-hiring.herokuapp.com/?username=";
-  const AVATAR_ENDPOINT = "https://ui-avatars.com/api/?background=EEE&size=32&name="
+  const AVATAR_ENDPOINT =
+    "https://ui-avatars.com/api/?background=EEE&size=32&name=";
+  const GIPHY_ENDPOINT =
+    "https://api.giphy.com/v1/gifs/search?api_key=VcLiFEj1SPoqctcTfJiYABIubKxTFLBb&&limit=1&offset=0&rating=g&lang=en&q=";
 
   useEffect(() => {
     const { username } = queryString.parse(location.search);
@@ -55,24 +61,25 @@ const ChatRoom: React.FC<Props> = ({ location }) => {
 
   useEffect(() => {
     socket.on("user-connected", (userName: string) => {
-      console.log("El usuario ", userName, " se conectó")
+      console.log(userName, " is online");
     });
 
-    let oldMessages: IMessage[] = []
-      
+    let oldMessages: IMessage[] = [];
+
     socket.on("message", (message: IMessage) => {
-      oldMessages.push(message)
+      oldMessages.push(message);
       setMessages([...oldMessages]);
     });
 
     socket.on("is-typing", (typers: ITypers) => {
-      const typingPeople = Object.keys(typers).filter(user => !!typers[user])
-      
+      const typingPeople = Object.keys(typers).filter((user) => !!typers[user]);
+
       if (typingPeople.length) {
-        const typer = typingPeople.length === 1 ? `${typingPeople[0]} is` : 'People are'
-        setTyping(`${typer} typing...`)
+        const typer =
+          typingPeople.length === 1 ? `${typingPeople[0]} is` : "People are";
+        setTyping(`${typer} typing...`);
       } else {
-        setTyping('')
+        setTyping("");
       }
     });
   }, []);
@@ -80,21 +87,37 @@ const ChatRoom: React.FC<Props> = ({ location }) => {
   const sendMessage = (event: React.KeyboardEvent<HTMLInputElement>) => {
     event.preventDefault();
 
-    if (message) {
-      socket.emit("text-message", message.text, () => setMessage(DEFAULT_MESSAGE));
+    if (message && message.text) {
+      if (message.text.trim().slice(0, 4) === "/gif") {
+        const searchTerm = message.text.trim().slice(5);
+        fetch(GIPHY_ENDPOINT + searchTerm)
+          .then((response) => response.json())
+          .then(({ data }) => {
+            const gifUrl = data[0].images.fixed_height_small.url;
+
+            socket.emit("image-message", { url: gifUrl, alt: searchTerm });
+            setMessage(DEFAULT_MESSAGE)
+          })
+          .catch((error) => console.log(error));
+      } else {
+        socket.emit("text-message", message.text);
+        setMessage(DEFAULT_MESSAGE)
+      }
     }
   };
 
   const updateCurrentMessage = (textMessage: string) => {
     socket.emit("typing", true);
-    
+
     if (currentTimeout) {
-      clearTimeout(currentTimeout)
+      clearTimeout(currentTimeout);
     }
 
-    setCurrentTimeout(setTimeout(() => {
-      socket.emit("typing", false);
-    }, 2000))
+    setCurrentTimeout(
+      setTimeout(() => {
+        socket.emit("typing", false);
+      }, 2000)
+    );
 
     setMessage({
       type: "text",
@@ -110,8 +133,12 @@ const ChatRoom: React.FC<Props> = ({ location }) => {
       <div>
         {messages.map((message) => (
           <p key={message.username + message.time}>
-            <img src={AVATAR_ENDPOINT + message.username} alt="avatar"/>
-            : {message.text}
+            <img src={AVATAR_ENDPOINT + message.username} alt="avatar" />:{" "}
+            {message.type === "text" ? (
+              message.text
+            ) : (
+              <img src={message.url} alt={message.alt || "gitImage"} />
+            )}
           </p>
         ))}
 
