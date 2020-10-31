@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import queryString from "query-string";
 import io from "socket.io-client";
 
+import './chat-room.module.css'
+
 let socket: SocketIOClient.Socket;
 
 interface Location {

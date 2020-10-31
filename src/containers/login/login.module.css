@@ -6,7 +6,7 @@
   height: 100vh;
 }
 
-.login-box {
+.loginBox {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -21,18 +21,18 @@
   font-weight: bold;
 }
 
-.login-title {
+.loginTitle {
   margin: 0;
   font-weight: normal;
 }
 
-.login-instruction {
+.loginInstruction {
   display: flex;
   flex-direction: column;
   gap: 0.4rem
 }
 
-.login-input {
+.loginInput {
   padding: 1rem;
   line-height: 1.8rem;
   font-weight: normal;
@@ -40,11 +40,11 @@
   border-radius: 0.8rem;
 }
 
-.login-link {
+.loginLink {
   align-self: flex-end;
 }
 
-.login-btn {
+.loginBtn {
   padding: 1.2rem;
   border: #FF8200;
   border-radius: 0.4rem;
