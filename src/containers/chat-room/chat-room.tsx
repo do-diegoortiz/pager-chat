@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, CSSProperties } from "react";
 import queryString from "query-string";
 import io from "socket.io-client";
 
 import Layout from '../../components/layout'
+import styles from './chat-room.module.css'
 
 let socket: SocketIOClient.Socket;
 
@@ -45,9 +46,13 @@ const ChatRoom: React.FC<Props> = ({ location }) => {
 
   const BASE_ENDPOINT = "https://pager-hiring.herokuapp.com/?username=";
   const AVATAR_ENDPOINT =
-    "https://ui-avatars.com/api/?background=EEE&size=32&name=";
+    "https://ui-avatars.com/api/?background=EEE&size=40&font-size=0.36&name=";
   const GIPHY_ENDPOINT =
     "https://api.giphy.com/v1/gifs/search?api_key=VcLiFEj1SPoqctcTfJiYABIubKxTFLBb&&limit=1&offset=0&rating=g&lang=en&q=";
+  const chatBoxStyles: CSSProperties = {
+    maxHeight: '70rem',
+    padding: '2.4rem 2.4rem 1.2rem'
+  }
 
   useEffect(() => {
     const { username } = queryString.parse(location.search);
@@ -131,24 +136,39 @@ const ChatRoom: React.FC<Props> = ({ location }) => {
 
   return (
     <Layout customStyles={chatBoxStyles}>
+      <section className={styles.messages}>
         {messages.map((message) => (
-          <p key={message.username + message.time}>
-            <img src={AVATAR_ENDPOINT + message.username} alt="avatar" />:{" "}
-            {message.type === "text" ? (
-              message.text
-            ) : (
-              <img src={message.url} alt={message.alt || "gitImage"} />
-            )}
-          </p>
+          <div className={styles.messageContainer} key={message.username + message.time}>
+            <img className={styles.userAvatar} src={AVATAR_ENDPOINT + message.username} alt="avatar" />
+
+            <div className={styles.userMessageWrapper}>
+              <strong>
+                {message.username}
+              </strong>
+
+              {message.type === "text" ? (
+                message.text
+              ) : (
+                <img src={message.url} alt={message.alt || "gitImage"} />
+              )}
+            </div>
+          </div>
         ))}
 
+      </section>
+      <section className={styles.inputSection}>
         <input
           value={message.text}
+          className={styles.inputBox}
+          placeholder="Message"
           onChange={(event) => updateCurrentMessage(event.target.value)}
           onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) =>
             event.key === "Enter" ? sendMessage(event) : null
           }
         />
+        <span className={styles.inputActionText}>Send</span>
+        <p className={styles.typingMessage}>{typing}</p>
+      </section>
     </Layout>
   );
 };
