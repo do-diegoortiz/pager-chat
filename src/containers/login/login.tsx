@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+import Layout from '../../components/layout'
 import styles from './login.module.css'
 
 const Login = () => {
   const [userName, setUserName] = useState("");
 
   return (
-    <div className={styles.container}>
-      <div className={styles.loginBox}>
-        <h1 className={styles.loginTitle}>Join chat</h1>
+    <Layout customStyles={loginBoxStyles}>
 
         <label className={styles.loginInstruction}>
           Please enter your username
@@ -28,8 +27,7 @@ const Login = () => {
         >
           <button className={styles.loginBtn} type="submit">Next</button>
         </Link>
-      </div>
-    </div>
+    </Layout>
   );
 };
 

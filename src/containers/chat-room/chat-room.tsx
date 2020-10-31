@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import queryString from "query-string";
 import io from "socket.io-client";
 
-import './chat-room.module.css'
+import Layout from '../../components/layout'
 
 let socket: SocketIOClient.Socket;
 
@@ -130,9 +130,7 @@ const ChatRoom: React.FC<Props> = ({ location }) => {
   };
 
   return (
-    <div className="container">
-      <h1>Chat</h1>
-      <div>
+    <Layout customStyles={chatBoxStyles}>
         {messages.map((message) => (
           <p key={message.username + message.time}>
             <img src={AVATAR_ENDPOINT + message.username} alt="avatar" />:{" "}
@@ -151,9 +149,7 @@ const ChatRoom: React.FC<Props> = ({ location }) => {
             event.key === "Enter" ? sendMessage(event) : null
           }
         />
-        <p>{typing}</p>
-      </div>
-    </div>
+    </Layout>
   );
 };
 
