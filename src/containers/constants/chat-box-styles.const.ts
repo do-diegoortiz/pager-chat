@@ -1,7 +1,7 @@
 import { CSSProperties } from "react";
 
 const CHAT_BOX_STYLES: CSSProperties = {
-  maxHeight: "76rem",
+  height: "76rem",
   padding: "2.4rem 2.4rem 1.2rem",
 };
 

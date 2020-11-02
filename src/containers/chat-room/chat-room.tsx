@@ -37,7 +37,7 @@ const ChatRoom: React.FC<Props> = ({ location }) => {
 
   useEffect(() => {
     socket.on("user-connected", (userName: string) => {
-      console.log(userName, " is online");
+      // No instructions here
     });
 
     let oldMessages: IMessage[] = [];
