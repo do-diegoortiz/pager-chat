@@ -3,9 +3,9 @@ import queryString from "query-string";
 import io from "socket.io-client";
 
 import Layout from "../../components/layout";
-import DEFAULT_MESSAGE from "../constants/default-message.const";
-import CHAT_BOX_STYLES from "../constants/chat-box-styles.const";
-import { ILocation, IMessage, ITypers } from "../interfaces";
+import DEFAULT_MESSAGE from "../../constants/default-message.const";
+import CHAT_BOX_STYLES from "../../constants/chat-box-styles.const";
+import { ILocation, IMessage, ITypers } from "../../interfaces";
 import styles from "./chat-room.module.css";
 
 interface Props {
